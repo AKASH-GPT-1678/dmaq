@@ -16,6 +16,7 @@ export default function PostCreatedForm ({setShowActivity} : PostProps)  {
     title: "",
     description: "",
   });
+  const tenantId = "tenant_001";
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -32,7 +33,7 @@ export default function PostCreatedForm ({setShowActivity} : PostProps)  {
     e.preventDefault();
 
     const payload = {
-      tenantId: form.tenantId,
+      tenantId: tenantId,
       actorId: form.actorId,
       actorName: form.actorName,
       type: form.type,
@@ -42,11 +43,11 @@ export default function PostCreatedForm ({setShowActivity} : PostProps)  {
       },
     };
 
-    console.log(payload);
+    // console.log(payload);
     try {
       const res = await axios.post("http://localhost:3000/activities", payload);
 
-      console.log(res.data);
+      // console.log(res.data);
     } catch (error) {
       console.error(error);
     }
@@ -64,31 +65,7 @@ export default function PostCreatedForm ({setShowActivity} : PostProps)  {
         onSubmit={handleSubmit}
         className="flex flex-col gap-3 bg-white p-4 sm:w-60 md:w-80 lg:w-100"
       >
-        <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-gray-700">Tenant ID</span>
 
-          <input
-            name="tenantId"
-            value={form.tenantId}
-            onChange={handleChange}
-            placeholder="Enter tenant ID"
-            className="
-      w-full
-      rounded-lg
-      border
-      border-gray-300
-      px-4
-      py-2
-      text-gray-900
-      outline-none
-      transition
-      focus:border-blue-500
-      focus:ring-2
-      focus:ring-blue-200
-      placeholder:text-gray-400
-    "
-          />
-        </label>
 
         <label className="flex flex-col gap-2">
           <span className="text-sm font-medium text-gray-700">Actor ID</span>

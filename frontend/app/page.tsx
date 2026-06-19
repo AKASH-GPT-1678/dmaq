@@ -1,4 +1,3 @@
-import Image from "next/image";
 import ActivityFeed from "./components/ActivityFeed";
 
 export default function Home() {
