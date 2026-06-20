@@ -1,35 +1,5 @@
 import Activity from "../models/activities.js";
 
-const createActivity = async (req, res) => {
-  try {
-    const lastActivity = await Activity.findOne()
-      .sort({ entityId: -1 })
-      .select("entityId");
-
-    const nextEntityId = lastActivity ? lastActivity.entityId + 1 : 1;
-    const activity = await Activity.create({
-      tenantId: req.body.tenantId,
-      actorId: req.body.actorId,
-      actorName: req.body.actorName,
-      type: req.body.type,
-      entityId: nextEntityId,
-
-      metadata: req.body.metadata,
-    });
-
-    res.status(201).json({
-      success: true,
-      data: activity,
-    });
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
 const getActivity = async (req, res) => {
   try {
     let { limit, cursor } = req.query;
@@ -39,6 +9,7 @@ const getActivity = async (req, res) => {
     const query = {
       tenantId: tenantId,
     };
+    
 
     if (cursor) {
       query.createdAt = {
@@ -59,4 +30,4 @@ const getActivity = async (req, res) => {
   }
 };
 
-export { createActivity, getActivity };
+export { getActivity };
