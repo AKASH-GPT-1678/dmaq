@@ -1,22 +1,23 @@
 "use client";
+
 import React from "react";
 import axios from "axios";
 import { Activity } from "../types/Activity";
 import PostCreatedForm from "./modals/PostForm";
 import { io, Socket } from "socket.io-client";
 import { useRouter } from "next/navigation";
-import { error } from "console";
+
 const ActivityFeed = () => {
-  const [limit, setLimit] = React.useState(0);
   const [cursor, setCursor] = React.useState(new Date());
   const [showActivity, setShowActvity] = React.useState(false);
   const [scrollIndex, setScrollIndex] = React.useState(1);
+  const tenantId =
+    typeof window !== "undefined" ? localStorage.getItem("tenant-id") : null;
 
   const [activity, setActivity] = React.useState<Activity[]>([]);
   const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
   const router = useRouter();
   const socketRef = React.useRef<Socket | null>(null);
-  const tenantId = "tenant_001";
 
   const loadActivity = async (cursor: Date): Promise<Activity[]> => {
     try {
@@ -74,6 +75,7 @@ const ActivityFeed = () => {
     const socketInstance = io("http://localhost:3000", {
       autoConnect: false,
     });
+    if (!tenantId) return;
 
     socketRef.current = socketInstance;
     socketInstance.connect();
@@ -115,7 +117,7 @@ const ActivityFeed = () => {
       </div>
 
       {/* Feed */}
-      <p>{scrollIndex}</p>
+      <p>{tenantId}</p>
       <div className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-8 ">
         {activity.map((activity, index) => (
           <div

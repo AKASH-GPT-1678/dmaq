@@ -9,6 +9,8 @@ import {
 
   createManyActivities,
   getActivity,
+  login,
+  register,
 } from "./controllers/activity.controller.js";
 import http from "http"
 
@@ -78,5 +80,9 @@ app
 app
 .route("/many")
 .post(createManyActivities)
+
+
+app.post("/register" , register);
+app.post("/login" , login);
 
 export default server;

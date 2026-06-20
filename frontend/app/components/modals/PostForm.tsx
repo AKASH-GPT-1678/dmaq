@@ -16,7 +16,9 @@ export default function PostCreatedForm ({setShowActivity} : PostProps)  {
     title: "",
     description: "",
   });
-  const tenantId = "tenant_001";
+    const tenantId =
+    typeof window !== "undefined" ? localStorage.getItem("tenant-id") : null;
+
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -46,6 +48,9 @@ export default function PostCreatedForm ({setShowActivity} : PostProps)  {
     // console.log(payload);
     try {
       const res = await axios.post("http://localhost:3000/activities", payload);
+      if(res.status == 201){
+        setShowActivity(false)
+      }
 
       // console.log(res.data);
     } catch (error) {
