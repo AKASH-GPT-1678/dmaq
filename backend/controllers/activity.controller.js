@@ -30,4 +30,22 @@ const getActivity = async (req, res) => {
   }
 };
 
-export { getActivity };
+const createManyActivities = async (req, res) => {
+  try {
+    const activities = req.body;
+
+    const insertedActivities = await Activity.insertMany(activities);
+
+    res.status(201).json({
+      success: true,
+      data: insertedActivities,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export { getActivity ,createManyActivities};

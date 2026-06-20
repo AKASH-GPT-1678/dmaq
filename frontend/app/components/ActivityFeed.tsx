@@ -10,18 +10,15 @@ const ActivityFeed = () => {
   const [limit, setLimit] = React.useState(0);
   const [cursor, setCursor] = React.useState(new Date());
   const [showActivity, setShowActvity] = React.useState(false);
+  const [scrollIndex, setScrollIndex] = React.useState(1);
 
   const [activity, setActivity] = React.useState<Activity[]>([]);
   const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
   const router = useRouter();
   const socketRef = React.useRef<Socket | null>(null);
   const tenantId = "tenant_001";
-  const handleScroll = () => {
-    const dates = new Date()
-    dates.setDate(-1)
-    console.log(dates)
-  }
-  const loadActivity = async (): Promise<Activity[]> => {
+
+  const loadActivity = async (cursor: Date): Promise<Activity[]> => {
     try {
       const response = await axios.get<Activity[]>(
         `http://localhost:3000/activities?cursor=${cursor}&limit=20`,
@@ -31,6 +28,7 @@ const ActivityFeed = () => {
           },
         },
       );
+      console.log(response.data);
 
       return response.data;
     } catch (error) {
@@ -38,12 +36,33 @@ const ActivityFeed = () => {
       return [];
     }
   };
+  const cursorRef = React.useRef(new Date());
+  let scrollIndexx = 0;
+
+  const handleScroll = async () => {
+    const value = window.scrollY;
+
+    if (value >= 3000 * scrollIndexx) {
+      console.log(scrollIndex);
+      const next = new Date(cursorRef.current);
+      next.setDate(next.getDate() - 1);
+
+      cursorRef.current = next;
+      setCursor(next);
+      scrollIndexx++;
+
+      console.log("Fetching:", next);
+
+      const response = await loadActivity(next);
+      setActivity((prev) => [...prev, ...response]);
+    }
+  };
 
   React.useEffect(() => {
     if (!tenantId) {
       router.push("/login");
     }
-    loadActivity()
+    loadActivity(cursor)
       .then((data) => {
         console.log(data);
         setActivity(data);
@@ -71,6 +90,13 @@ const ActivityFeed = () => {
       socketInstance.disconnect();
     };
   }, []);
+  React.useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -89,10 +115,11 @@ const ActivityFeed = () => {
       </div>
 
       {/* Feed */}
-      <div className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-8">
-        {activity.map((activity) => (
+      <p>{scrollIndex}</p>
+      <div className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-8 ">
+        {activity.map((activity, index) => (
           <div
-            key={activity._id}
+            key={index}
             className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 shadow-lg transition duration-300 hover:border-zinc-700 hover:-translate-y-1"
           >
             {/* Top */}

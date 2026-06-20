@@ -7,6 +7,7 @@ import Activity from "./models/activities.js";
 import { Server } from "socket.io";
 import {
 
+  createManyActivities,
   getActivity,
 } from "./controllers/activity.controller.js";
 import http from "http"
@@ -72,5 +73,10 @@ app
   .route("/activities")
   .post(createActivity)
   .get(getActivity);
+
+
+app
+.route("/many")
+.post(createManyActivities)
 
 export default server;
