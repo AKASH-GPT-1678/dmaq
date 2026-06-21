@@ -15,3 +15,7 @@ export type Activity = {
   updatedAt: string;
   __v: number;
 };
+export type ActivityResponse = {
+  data : Activity[];
+  lastTimestamp : Date
+}

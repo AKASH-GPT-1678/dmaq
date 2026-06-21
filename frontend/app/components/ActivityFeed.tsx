@@ -2,7 +2,7 @@
 
 import React from "react";
 import axios from "axios";
-import { Activity } from "../types/Activity";
+import { Activity, ActivityResponse } from "../types/Activity";
 import PostCreatedForm from "./modals/PostForm";
 import { io, Socket } from "socket.io-client";
 import { useRouter } from "next/navigation";
@@ -19,9 +19,10 @@ const ActivityFeed = () => {
   const router = useRouter();
   const socketRef = React.useRef<Socket | null>(null);
 
-  const loadActivity = async (cursor: Date): Promise<Activity[]> => {
+  const loadActivity = async (cursor: Date): Promise<ActivityResponse> => {
     try {
-      const response = await axios.get<Activity[]>(
+      
+      const response = await axios.get<ActivityResponse>(
         `http://localhost:3000/activities?cursor=${cursor}&limit=20`,
         {
           headers: {
@@ -29,12 +30,13 @@ const ActivityFeed = () => {
           },
         },
       );
+      console.log(response)
       console.log(response.data);
 
       return response.data;
     } catch (error) {
       console.error(error);
-      return [];
+      throw error;
     }
   };
   const cursorRef = React.useRef(new Date());
@@ -45,17 +47,19 @@ const ActivityFeed = () => {
 
     if (value >= 3000 * scrollIndexx) {
       console.log(scrollIndex);
-      const next = new Date(cursorRef.current);
-      next.setDate(next.getDate() - 1);
 
-      cursorRef.current = next;
-      setCursor(next);
       scrollIndexx++;
 
-      console.log("Fetching:", next);
+      // console.log("Fetching:", next);
 
-      const response = await loadActivity(next);
-      setActivity((prev) => [...prev, ...response]);
+      const response = await loadActivity(cursorRef.current);
+      if(response.data.length > 0){
+           cursorRef.current = response.lastTimestamp;
+
+      }
+   
+
+      setActivity((prev) => [...prev, ...response.data]);
     }
   };
 
@@ -66,7 +70,12 @@ const ActivityFeed = () => {
     loadActivity(cursor)
       .then((data) => {
         console.log(data);
-        setActivity(data);
+        setActivity(data.data);
+
+          if(data.data.length > 0){
+           cursorRef.current = data.lastTimestamp;
+
+      }
       })
       .catch((e) => {
         console.error(e);
@@ -105,27 +114,23 @@ const ActivityFeed = () => {
       {/* Header */}
       <div className="sticky top-0 z-20 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
- 
           <div>
-         <h1 className="text-2xl font-bold">Activity Feed</h1>
+            <h1 className="text-2xl font-bold">Activity Feed</h1>
           </div>
           <div className="flex gap-2">
-                      <button
-            onClick={() => setShowActvity(!showActivity)}
-            className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition hover:scale-105"
-          >
-            Create Activity
-          </button>
-           <button
-            onClick={() => router.push("/login")}
-            className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition hover:scale-105"
-          >
-            Change
-          </button>
-
+            <button
+              onClick={() => setShowActvity(!showActivity)}
+              className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition hover:scale-105"
+            >
+              Create Activity
+            </button>
+            <button
+              onClick={() => router.push("/login")}
+              className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition hover:scale-105"
+            >
+              Change
+            </button>
           </div>
-
-
         </div>
       </div>
 

@@ -16,13 +16,22 @@ const getActivity = async (req, res) => {
         $lt: new Date(cursor),
       };
     }
+    const totalCount = await Activity.countDocuments(query);
+    console.log(totalCount);
 
     const activities = await Activity.find(query)
       .sort({ createdAt: -1 })
       .limit(limit);
-    // .select("actorName type entityId createdAt");
 
-    return res.json(activities);
+    const lastTimestamp = activities.at(-1)?.createdAt;
+    console.log(lastTimestamp);
+    // .select("actorName type entityId createdAt");
+    const response = {
+      data : activities,
+      lastTimestamp : lastTimestamp
+    }
+
+    return res.json(response);
   } catch (err) {
     return res.status(500).json({
       message: err.message,
