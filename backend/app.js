@@ -14,16 +14,27 @@ import {
 import http from "http"
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://dmaq.vercel.app",
+      "http://localhost:3001",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use("/api", router);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3001",
+    origin: [
+      "http://localhost:3001",
+      "https://dmaq.vercel.app"
+    ],
     methods: ["GET", "POST"]
   }
 });
-
 io.on("connection", (socket) => {
   console.log("Connected:", socket.id);
 

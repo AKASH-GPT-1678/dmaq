@@ -6,6 +6,7 @@ const Register = () => {
   const [tenantId, setTenantId] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
+  const endpont = process.env.NEXT_PUBLIC_ENDPOINT ?? "http://localhost:3000";
 
   const handleSubmit = async () => {
     if (!tenantId.trim()) return;
@@ -13,7 +14,7 @@ const Register = () => {
     try {
       setLoading(true);
 
-      const response = await axios.post("http://localhost:3000/register", {
+      const response = await axios.post(`${endpont}/register`, {
         tenantId,
       });
 

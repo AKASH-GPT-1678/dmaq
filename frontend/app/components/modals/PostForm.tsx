@@ -8,6 +8,7 @@ interface PostProps {
 }
 
 export default function PostCreatedForm ({setShowActivity} : PostProps)  {
+  const endpont = process.env.NEXT_PUBLIC_ENDPOINT ?? "http://localhost:3000";
   const [form, setForm] = React.useState({
     tenantId: "",
     actorId: "",
@@ -47,7 +48,7 @@ export default function PostCreatedForm ({setShowActivity} : PostProps)  {
 
     // console.log(payload);
     try {
-      const res = await axios.post("http://localhost:3000/activities", payload);
+      const res = await axios.post(`${endpont}/activities`, payload);
       if(res.status == 201){
         setShowActivity(false)
       }

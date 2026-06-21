@@ -21,16 +21,15 @@ const ActivityFeed = () => {
 
   const loadActivity = async (cursor: Date): Promise<ActivityResponse> => {
     try {
-      
       const response = await axios.get<ActivityResponse>(
-        `http://localhost:3000/activities?cursor=${cursor}&limit=20`,
+        `${`${endpoint}/activities`}?cursor=${cursor}&limit=20`,
         {
           headers: {
             "tenant-id": tenantId,
           },
         },
       );
-      console.log(response)
+      console.log(response);
       console.log(response.data);
 
       return response.data;
@@ -53,11 +52,9 @@ const ActivityFeed = () => {
       // console.log("Fetching:", next);
 
       const response = await loadActivity(cursorRef.current);
-      if(response.data.length > 0){
-           cursorRef.current = response.lastTimestamp;
-
+      if (response.data.length > 0) {
+        cursorRef.current = response.lastTimestamp;
       }
-   
 
       setActivity((prev) => [...prev, ...response.data]);
     }
@@ -72,16 +69,15 @@ const ActivityFeed = () => {
         console.log(data);
         setActivity(data.data);
 
-          if(data.data.length > 0){
-           cursorRef.current = data.lastTimestamp;
-
-      }
+        if (data.data && data.data.length > 0) {
+          cursorRef.current = data.lastTimestamp;
+        }
       })
       .catch((e) => {
         console.error(e);
       });
 
-    const socketInstance = io("http://localhost:3000", {
+    const socketInstance = io(endpoint, {
       autoConnect: false,
     });
     if (!tenantId) return;
@@ -136,7 +132,7 @@ const ActivityFeed = () => {
 
       {/* Feed */}
       <div className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-8 ">
-        {activity.map((activity, index) => (
+        {activity && activity.map((activity, index) => (
           <div
             key={index}
             className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 shadow-lg transition duration-300 hover:border-zinc-700 hover:-translate-y-1"
