@@ -47,7 +47,7 @@ Indexes are created on frequently queried fields to improve performance, particu
 
 ## Cursor-Based Pagination
 
-Instead of offset-based pagination, the application uses cursor-based pagination with the `createdAt` field. This approach provides better performance and consistency when new activities are added in real time.
+Instead of offset-based pagination, the application uses cursor-based pagination with the `createdAt` field. This approach provides better performance and consistency when new activities are added in real time. Using mongoDB `skip` will make query very slow when database grows larger because even for getting page 40 and limit 20 it have to surf all records better approch is simply index combination of `tenantId` + `createdAt` which will make it directly jump into index 
 
 ## Real-Time Updates
 
