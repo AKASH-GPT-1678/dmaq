@@ -46,7 +46,7 @@ export default function PostCreatedForm ({setShowActivity} : PostProps)  {
       },
     };
 
-    // console.log(payload);
+
     try {
       const res = await axios.post(`${endpont}/activities`, payload);
       if(res.status == 201){
