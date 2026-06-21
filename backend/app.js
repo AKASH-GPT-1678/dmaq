@@ -1,6 +1,5 @@
 import express from "express";
 const app = express();
-import decodeToken from "./middlewares/checkTokenMiddleware.js";
 import router from "./routes/router.js";
 import cors from "cors";
 import Activity from "./models/activities.js";
@@ -16,7 +15,6 @@ import http from "http"
 
 app.use(express.json());
 app.use(cors());
-app.use(decodeToken);
 app.use("/api", router);
 const server = http.createServer(app);
 const io = new Server(server, {

@@ -105,19 +105,31 @@ const ActivityFeed = () => {
       {/* Header */}
       <div className="sticky top-0 z-20 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <h1 className="text-2xl font-bold">Activity Feed</h1>
-
-          <button
+ 
+          <div>
+         <h1 className="text-2xl font-bold">Activity Feed</h1>
+          </div>
+          <div className="flex gap-2">
+                      <button
             onClick={() => setShowActvity(!showActivity)}
             className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition hover:scale-105"
           >
             Create Activity
           </button>
+           <button
+            onClick={() => router.push("/login")}
+            className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition hover:scale-105"
+          >
+            Change
+          </button>
+
+          </div>
+
+
         </div>
       </div>
 
       {/* Feed */}
-      <p>{tenantId}</p>
       <div className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-8 ">
         {activity.map((activity, index) => (
           <div

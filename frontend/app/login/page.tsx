@@ -58,6 +58,13 @@ const Login = () => {
           >
             {loading ? "Logging in..." : "Submit"}
           </button>
+            <button
+            onClick={()=>router.push("/register")}
+        
+            className="rounded-xl bg-white px-4 py-3 font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+          >
+            Dont have account?  Register
+          </button>
         </div>
       </div>
     </div>
